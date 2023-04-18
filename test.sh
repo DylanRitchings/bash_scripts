@@ -22,7 +22,7 @@ function swch {
 
     start_path=$(echo $dir_path | sed "s/$start.*/$start/")
     end_path=""
-    if [[ $end =~ $dir_path ]]; then
+    if [[ $dir_path =~ $end ]]; then
         end_path=$(echo $dir_path | sed "s/.*$end/\/$end/")
     fi
 
