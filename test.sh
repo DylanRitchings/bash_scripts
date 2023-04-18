@@ -8,39 +8,47 @@
 # string1=/Users/dylan/dev/Repos/bash_scripts/main/engine_service/es/src/test
 #/Users/dylan/dev/Repos/bash_scripts/main/service_layer/sl/src/test
 #/Users/dylan/dev/Repos/bash_scripts/*/sl/src/test
+
+
+
+
 function swch {
-    #local dir_path repo_path find_path start end start_path end_path
+    local start end start_replace end_replace dir_path repo_path start_path end_path find_path depth all_paths dir_path
     start="main"
     end="src"
-
+    start_replace="$start\/\*"
+    end_replace="\/\*\/$end"
     dir_path=$(pwd | tr '[:upper:]' '[:lower:]')
 
     repo_path=$(git rev-parse --show-toplevel | tr '[:upper:]' '[:lower:]')
 
     #find_path=$(echo $dir_path | sed 's/main.*src/main\/\*\/src/')
     #find_path=$(echo $dir_path | sed "s/$start.*$end/$start\/\*\/$end/")
-
-    start_path=$(echo $dir_path | sed "s/$start.*/$start/")
+    start_path=$(echo $dir_path | sed "s/$start.*/$start_replace/")
     end_path=""
     if [[ $dir_path =~ $end ]]; then
-        end_path=$(echo $dir_path | sed "s/.*$end/\/$end/")
+        end_path=$(echo $dir_path | sed "s/.*$end/$end_replace/")
     fi
 
-    find_path="${start_path}/*${end_path}"
+    find_path="${start_path}${end_path}"
 
+    depth=$(pwd | sed "s|$repo_path||" | tr -dc '/' | wc -c)
 
-    all_paths=$(find "$repo_path" -path "$find_path" -type d)
+    all_paths=$(find "$repo_path" -path "$find_path" -type d -maxdepth $depth -mindepth $depth)
 
     dir_path=$(echo $all_paths | fzf)
-    echo ${dir_path}
+
     cd "${dir_path}" || exit
 
-    #TODO find a way to stay in the same dir num
-    #count slashes and remove any string with more than one slash
 }
 
 
-#slash_count=$(echo $find_path | grep -o "/" | wc -l)
+
+
+
+#TODO find a way to stay in the same dir num
+#count slashes and remove any string with more than one slash
+#
 # # loop through each line in $all_paths
 # while read line; do
 #     # count the number of slashes in the line
