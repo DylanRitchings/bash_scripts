@@ -1,18 +1,39 @@
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    emacs_location=""
+
+    function e {
+        emacsclient -c -n -a emacs $1
+    }
+
     bash_loc="$HOME/.zshrc"
 fi
 
-if [[ "$OSTYPE" == "windows"* ]]; then
-    emacs_locations=""
+if [[ "$OSTYPE" == "msys" ]]; then
+    # emacs="C:/Users/dylan.ritchings/scoop/apps/emacs/current/bin/runemacs.exe"
+    # emacs_client="C:/Users/dylan.ritchings/scoop/apps/emacs/current/bin/emacsclient.exe"
+
+    emacs="emacs -q -l c:/Users/dylan.ritchings/AppData/Roaming/.emacs.d/init.el"
+    emacs_server="C:/Users/dylan.ritchings/scoop/apps/emacs/28.2/bin/.emacs.d/server/server"
+
+    function e {
+        #powershell "${emacs_client} -c -n -a emacs ${1}"
+        
+        emacsclient -n $1 &
+        #powershell emacsclient -f $emacs_server -c -n -a "$($emacs)" .
+    }
+
     bash_loc="$HOME/.bashrc"
 fi
+##powershell emacs -q -l c:/Users/dylan.ritchings/AppData/Roaming/.emacs.d/init.el
+##powershell emacsclient -c -n -a "$(emacs -q -l c:/Users/dylan.ritchings/AppData/Roaming/.emacs.d/init.el)" .
+
+##powershell emacsclient -c -n -a "$($emacs)" .
+
 
 
 ##CD
 
-alias cdd='cd ~/dev/' 
+alias cdd='cd ~/dev/'
 alias cdr='cd ~/dev/repos'
 
 ##GIT
@@ -41,18 +62,14 @@ alias pip="pip3"
 
 #EMACS
 
-function e {
-    emacs $1
-}
 
 function ef {
-    emacsclient -n $(fzf)
+    $emacs -n $(fzf)
 }
 
 function ec {
-    emacsclient -n $1
+    $emacs -n $1
 }
-
 
 #FZF
 
@@ -64,8 +81,6 @@ function dev {
     cd ~/Dev/
     cd $(find . -print | fzf)
 }
-
-
 
 function rep {
     cd ~/Dev/Repos/
