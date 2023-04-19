@@ -9,15 +9,12 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 if [[ "$OSTYPE" == "msys" ]]; then
-    # emacs="C:/Users/dylan.ritchings/scoop/apps/emacs/current/bin/runemacs.exe"
-    # emacs_client="C:/Users/dylan.ritchings/scoop/apps/emacs/current/bin/emacsclient.exe"
-
     emacs="emacs -q -l c:/Users/dylan.ritchings/AppData/Roaming/.emacs.d/init.el"
     emacs_server="C:/Users/dylan.ritchings/scoop/apps/emacs/28.2/bin/.emacs.d/server/server"
 
     function e {
         #powershell "${emacs_client} -c -n -a emacs ${1}"
-        
+
         emacsclient -n $1 &
         #powershell emacsclient -f $emacs_server -c -n -a "$($emacs)" .
     }
@@ -62,7 +59,6 @@ alias pip="pip3"
 
 #EMACS
 
-
 function ef {
     $emacs -n $(fzf)
 }
@@ -74,15 +70,28 @@ function ec {
 #FZF
 
 function cdf {
-    cd $(find . -print | fzf)
+    local path="$(find . -print | fzf)"
+    if [[ -f $path ]]; then
+        path="$(dirname $path)/"
+    fi
+    cd $path
 }
 
 function dev {
     cd ~/Dev/
-    cd $(find . -print | fzf)
+    local path="$(find . -print | fzf)"
+    if [[ -f $path ]]; then
+        path="$(dirname $path)/"
+    fi
+    cd $path
 }
 
 function rep {
     cd ~/Dev/Repos/
-    cd $(find . -print | fzf)
+    local path="$(find . -print | fzf)"
+    if [[ -f $path ]]; then
+        path="$(dirname $path)/"
+    fi
+    cd $path
 }
+
