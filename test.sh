@@ -13,28 +13,20 @@
 
 
 function swch {
-    local start end start_replace end_replace dir_path repo_path start_path end_path find_path depth all_paths dir_path
-    start="main"
-    end="src"
-    start_replace="$start\/\*"
-    end_replace="\/\*\/$end"
-    dir_path=$(pwd | tr '[:upper:]' '[:lower:]')
+    local replace_array dir_path repo_path dir_num depth all_paths dir_path
 
+    declare -a replace_array=(7 8)
+    dir_path=$(pwd | tr '[:upper:]' '[:lower:]')
     repo_path=$(git rev-parse --show-toplevel | tr '[:upper:]' '[:lower:]')
 
-    #find_path=$(echo $dir_path | sed 's/main.*src/main\/\*\/src/')
-    #find_path=$(echo $dir_path | sed "s/$start.*$end/$start\/\*\/$end/")
-    start_path=$(echo $dir_path | sed "s/$start.*/$start_replace/")
-    end_path=""
-    if [[ $dir_path =~ $end ]]; then
-        end_path=$(echo $dir_path | sed "s/.*$end/$end_replace/")
-    fi
-
-    find_path="${start_path}${end_path}"
+    for dir_num in "${replace_array[@]}"
+    do
+        dir_path=$(echo $dir_path | sed "s|\/[^/]*[[:alpha:]*]|/\*|$dir_num")
+    done
 
     depth=$(pwd | sed "s|$repo_path||" | tr -dc '/' | wc -c)
 
-    all_paths=$(find "$repo_path" -path "$find_path" -type d -maxdepth $depth -mindepth $depth)
+    all_paths=$(find "$repo_path" -path "$dir_path" -type d -maxdepth $depth -mindepth $depth)
 
     dir_path=$(echo $all_paths | fzf)
 
