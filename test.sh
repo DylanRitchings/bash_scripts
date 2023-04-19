@@ -33,22 +33,3 @@ function swch {
     cd "${dir_path}" || exit
 
 }
-
-
-
-
-
-#TODO find a way to stay in the same dir num
-#count slashes and remove any string with more than one slash
-#
-# # loop through each line in $all_paths
-# while read line; do
-#     # count the number of slashes in the line
-#     num_slashes=$(echo "$line" | grep -o "/" | wc -l)
-
-#     # if the number of slashes is less than or equal to $slash_count, print the line
-#     if [ "$num_slashes" -le "$slash_count" ]; then
-#         echo "$line"
-#     fi
-# done <<< "$all_paths"
-
