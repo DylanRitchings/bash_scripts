@@ -13,23 +13,64 @@
 
 
 function swch {
-    local replace_array dir_path repo_path dir_num depth all_paths dir_path
+    local replace_array dir_path repo_path dir_num depth_string repo_depth depth all_paths dir_path final_path
 
-    declare -a replace_array=(7 8)
-    dir_path=$(pwd | tr '[:upper:]' '[:lower:]')
-    repo_path=$(git rev-parse --show-toplevel | tr '[:upper:]' '[:lower:]')
+    declare -a replace_array=(1 7 9 11)
+    dir_path=$(pwd) #| tr '[:upper:]' '[:lower:]')
+    repo_path=$(git rev-parse --show-toplevel) #| tr '[:upper:]' '[:lower:]')
+
+    depth_string=${dir_path//[!\/]}
+    repo_depth=${repo_path//[!\/]}
+    depth=$(expr ${#depth_string} - ${#repo_depth} - 1)
 
     for dir_num in "${replace_array[@]}"
+
     do
-        dir_path=$(echo $dir_path | sed "s|\/[^/]*[[:alpha:]*]|/\*|$dir_num")
+        dir_path=$(echo $dir_path | sed "s|\/[^/]*[[:alpha:]*]|/.\*|${dir_num}")
     done
 
-    depth=$(pwd | sed "s|$repo_path||" | tr -dc '/' | wc -c)
+    dir_path=${dir_path#\/}
 
-    all_paths=$(find "$repo_path" -path "$dir_path" -type d -maxdepth $depth -mindepth $depth)
+    all_paths=$(find "$repo_path" -maxdepth "$depth" -mindepth "$depth" -regex "$dir_path" -type d )
+    final_path=$(echo ${all_paths//$repo_path} | tr ' ' '\n' | fzf )
 
-    dir_path=$(echo $all_paths | fzf)
-
-    cd "${dir_path}" || exit
-
+    if [ ! -z "$final_path" ]
+    then
+        cd "${repo_path}${final_path}" || exit
+    fi
 }
+
+
+function swch2 {
+    local replace_array dir_path repo_path dir_num depth_string repo_depth depth all_paths dir_path final_path
+
+    declare -a replace_array=(1 7 9 11)
+    dir_path=$(pwd) #| tr '[:upper:]' '[:lower:]')
+    repo_path=$(git rev-parse --show-toplevel) #| tr '[:upper:]' '[:lower:]')
+
+    depth_string=${dir_path//[!\/]}
+    repo_depth=${repo_path//[!\/]}
+    depth=$(expr ${#depth_string} - ${#repo_depth} - 1)
+
+    for dir_num in "${replace_array[@]}"
+
+    do
+        dir_path=$(echo $dir_path | sed "s|\/[^/]*[[:alpha:]*]|/.\*|${dir_num}")
+    done
+
+    dir_path=${dir_path#\/}
+
+    #all_paths=$(find "$repo_path" -maxdepth "$depth" -mindepth "$depth" -path "*" -type d)
+    all_paths=$(find "$repo_path" -maxdepth "$depth" -mindepth "$depth" -regex "$dir_path" -type d )
+    final_path=$(echo ${all_paths//$repo_path} | tr ' ' '\n' | fzf )
+
+    if [ ! -z "$final_path" ]
+    then
+        cd "${repo_path}${final_path}" || exit
+    fi
+}
+
+
+#/*/Users/dylan.ritchings/dev/repos/aviation-data-services/*/cdk/*/src/*/service
+#all_paths=$(find "$repo_path" -maxdepth "$depth" -mindepth "$depth" -path "*/Users/dylan.ritchings/dev/repos/aviation-data-services/*/cdk/*/src/*/service" -type d )
+
