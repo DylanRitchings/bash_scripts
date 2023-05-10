@@ -2,7 +2,7 @@
 if [[ "$OSTYPE" == "darwin"* ]]; then
 
     function e {
-        emacsclient -c -n -a emacs $1
+        emacsclient -c -n -a emacs $@
     }
 
     bash_loc="$HOME/.zshrc"
@@ -13,9 +13,9 @@ if [[ "$OSTYPE" == "msys" ]]; then
     emacs_server="C:/Users/dylan.ritchings/scoop/apps/emacs/28.2/bin/.emacs.d/server/server"
 
     function e {
-        #powershell "${emacs_client} -c -n -a emacs ${1}"
-
-        emacsclient -n $1 &
+        # powershell "${emacs_client} -c -n -a emacs ${1}"
+        emacsclient -f $emacs_server -c -n -a emacs $@
+        # emacsclient -n "$@" &
         #powershell emacsclient -f $emacs_server -c -n -a "$($emacs)" .
     }
 
@@ -52,9 +52,9 @@ alias code="code -r"
 
 ## PYTHON
 
-alias py="python3"
-alias python="python3"
-alias pip="pip3"
+alias py="python"
+alias python="python"
+alias pip="pip"
 
 
 #EMACS
@@ -94,4 +94,3 @@ function rep {
     fi
     cd $path
 }
-
