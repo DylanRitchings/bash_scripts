@@ -14,9 +14,9 @@ if [[ "$OSTYPE" == "msys" ]]; then
 
     function e {
         # powershell "${emacs_client} -c -n -a emacs ${1}"
-        emacsclient -f $emacs_server -c -n -a emacs $@
+        #emacsclient -f $emacs_server -c -n -a emacs $@
         # emacsclient -n "$@" &
-        #powershell emacsclient -f $emacs_server -c -n -a "$($emacs)" .
+        powershell emacsclient -f $emacs_server -c -n -a "$($emacs)" $@
     }
 
     bash_loc="$HOME/.bashrc"
@@ -32,6 +32,8 @@ fi
 
 alias cdd='cd ~/dev/'
 alias cdr='cd ~/dev/repos'
+alias ads='cd ~/dev/repos/aviation-data-services'
+
 
 ##GIT
 
@@ -41,6 +43,9 @@ alias gau='git add -u'
 alias gc='git commit -m'
 alias gcane="git commit --amend --no-edit"
 alias glog="git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all"
+
+alias ghead="cd $(git rev-parse --show-toplevel)"
+
 
 
 ## OTHER
@@ -64,7 +69,7 @@ function ef {
 }
 
 function ec {
-    $emacs -n $1
+    emacsclient $@ &
 }
 
 #FZF
