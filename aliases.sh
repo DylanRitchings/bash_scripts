@@ -99,3 +99,13 @@ function rep {
     fi
     cd $path
 }
+
+function gcf {
+    git add -u
+    git commit --fixup $(git log -n 1 --pretty=format:"%h" | tail -n 1)
+}
+
+function gcom {
+    git add -u
+    git commit -m "$@"
+}
