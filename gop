@@ -1,0 +1,29 @@
+#!/bin/bash
+set -e
+remote_url=$(git config --get remote.origin.url)
+
+if [ -z "$remote_url" ]; then
+  echo "Not a git repository or no remote.origin.url set"
+  return 1
+fi
+
+branch=$(git symbolic-ref --quiet --short HEAD)
+if [ -z "$branch" ]; then
+  branch=$(git rev-parse --short HEAD)
+fi
+
+remote_url=${remote_url/git@github.com:/https://github.com/}
+remote_url=${remote_url%.git}
+
+url="$remote_url/tree/$branch"
+
+if command -v xdg-open &> /dev/null; then
+  xdg-open "$url"
+elif command -v open &> /dev/null; then
+  open "$url"
+elif command -v start &> /dev/null; then
+  start "$url"
+else
+  echo "Unable to open URL: $url"
+  echo "Please install xdg-open or open, or manually navigate to the URL."
+fi

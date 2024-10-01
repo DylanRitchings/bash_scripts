@@ -41,4 +41,39 @@ $pr_body
 [Jira Issue](https://metoffice.atlassian.net/browse/$jira_id)"
 
 # Create the pull request
-gh pr create --title "$pr_title" --body "$full_body"
+gh pr create --title "$pr_title" --body "$full_body" && gop || gop
+
+# pr_output=$(gh pr create --title "$pr_title" --body "$full_body" 2>&1)
+
+#
+# # Extract the PR URL
+# pr_url=$(echo "$pr_output" | grep -oP 'https://github.com/[^\s]+')
+#
+# if [ -n "$pr_url" ]; then
+#     echo "Pull request created or updated successfully."
+#     echo "PR URL: $pr_url"
+#
+#     # Copy PR URL to clipboard (works on macOS and Linux)
+#     if command -v pbcopy > /dev/null; then
+#         echo "$pr_url" | pbcopy
+#         echo "PR URL copied to clipboard."
+#     elif command -v xclip > /dev/null; then
+#         echo "$pr_url" | xclip -selection clipboard
+#         echo "PR URL copied to clipboard."
+#     else
+#         echo "Clipboard tool not found. Please copy the URL manually."
+#     fi
+#
+#     # Open PR URL in default browser
+#     if command -v open > /dev/null; then
+#         open "$pr_url"
+#     elif command -v xdg-open > /dev/null; then
+#         xdg-open "$pr_url"
+#     else
+#         echo "Unable to open URL automatically. Please open it manually in your browser."
+#     fi
+# else
+#     echo "Failed to create or update pull request. Please check the output for errors."
+#     echo "$pr_output"
+#     exit 1
+# fi
