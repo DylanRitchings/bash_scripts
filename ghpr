@@ -1,0 +1,44 @@
+#!/bin/bash
+set -e
+
+# Extract the JIRA ticket ID and branch description from the current branch name
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+jira_id=$(echo $current_branch | grep -oP '[A-Z]+-\d+')
+branch_desc=$(echo $current_branch | sed -E "s/.*$jira_id-//" | tr '-' ' ')
+default_base_branch="origin/main"
+git diff --color $default_base_branch...$current_branch
+
+read -p "Do you want to create a pull request? (y/n): " create_pr
+
+if [[ $create_pr != "y" && $create_pr != "Y" ]]; then
+    echo "Pull request creation cancelled."
+    exit 0
+fi
+
+# Prompt for PR title
+read -p "Enter PR title (leave blank to use branch name): " pr_title
+
+# Use branch name if title is blank
+if [ -z "$pr_title" ]; then
+    pr_title="$jira_id - $branch_desc"
+else
+    pr_title="$jira_id - $pr_title"
+fi
+
+# Prompt for PR body
+read -p "Enter PR description (leave blank to use branch description): " pr_body
+
+# Use branch description if body is blank
+if [ -z "$pr_body" ]; then
+    pr_body="$branch_desc"
+fi
+
+# Construct the full PR body
+full_body="## Description
+$pr_body
+
+## Jira Link
+[Jira Issue](https://metoffice.atlassian.net/browse/$jira_id)"
+
+# Create the pull request
+gh pr create --title "$pr_title" --body "$full_body"
