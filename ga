@@ -1,2 +1,2 @@
 #!/bin/bash
-git ls-files --others --exclude-standard | fzf -m --prompt="Select files to add: " | xargs -d '\n' git add
+git ls-files --others --exclude-standard | fzf -m --prompt="Select files to add: " --layout=reverse-list | xargs -d '\n' git add
